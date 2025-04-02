@@ -1,0 +1,67 @@
+classDiagram
+    class MainWindow {
+        +void startMonitoring()
+        +void stopMonitoring()
+        +void configureParameters()
+        +void configureConnection()
+    }
+    
+    class ParameterModel {
+        +void addParameter()
+        +void removeParameter()
+        +void updateParameter()
+        +std::vector~Parameter~ getParameters()
+    }
+    
+    class SotmClient {
+        -QTcpSocket* socket
+        +void connect(const Settings&)
+        +void disconnect()
+        +std::optional~QByteArray~ sendRequest()
+        +bool isConnected()
+    }
+    
+    class MonitoringService {
+        -QTimer* watchdogTimer
+        -std::atomic~bool~ running
+        +void start()
+        +void stop()
+    }
+    
+    class Parameter {
+        +QString name
+        +ParameterType type
+        +QVariant value
+        +QVariant targetValue
+        +bool checkCondition()
+        +void updateValue(QVariant)
+    }
+    
+    class AlertManager {
+        +void playAlert(AlertType)
+        +void stopAllAlerts()
+        +void configureAlert(AlertType, QString path)
+    }
+    
+    class LogManager {
+        +void logEvent(LogLevel, QString message)
+        +QVector~LogEntry~ getRecentLogs()
+    }
+    
+    class XmlParser {
+        +std::vector~Parameter~ parseParameters(QByteArray)
+        +QByteArray createParameterRequest()
+    }
+    
+    MainWindow --> ParameterModel: использует
+    MainWindow --> MonitoringService: управляет
+    MainWindow --> AlertManager: управляет
+    MainWindow --> LogManager: использует
+    
+    MonitoringService --> SotmClient: использует
+    MonitoringService --> ParameterModel: использует
+    MonitoringService --> XmlParser: использует
+    MonitoringService --> AlertManager: вызывает
+    MonitoringService --> LogManager: записывает события
+    
+    ParameterModel *-- Parameter: содержит

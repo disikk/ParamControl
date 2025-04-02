@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 530">
+  <!-- Background -->
+  <rect width="800" height="530" fill="#f5f5f5" />
+  
+  <!-- Window frame -->
+  <rect x="0" y="0" width="800" height="30" fill="#3273dc" />
+  <text x="10" y="20" font-family="Arial" font-size="14" fill="white">ParamControl - КА: 101 ЗС: 123</text>
+  <text x="700" y="20" font-family="Arial" font-size="12" fill="white">v1.2.5</text>
+  
+  <!-- Status bar at top -->
+  <rect x="0" y="30" width="800" height="50" fill="#ffffff" stroke="#e0e0e0" />
+  
+  <!-- Connection status -->
+  <rect x="10" y="40" width="70" height="30" rx="4" fill="#fc8181" stroke="#e53e3e" />
+  <text x="45" y="60" font-family="Arial" font-size="12" text-anchor="middle" fill="white">СОТМ</text>
+  
+  <!-- KA indicator -->
+  <rect x="90" y="40" width="60" height="30" rx="4" fill="#68d391" stroke="#38a169" />
+  <text x="120" y="60" font-family="Arial" font-size="12" text-anchor="middle" fill="white">КА 101</text>
+  
+  <!-- ZS indicator -->
+  <rect x="160" y="40" width="60" height="30" rx="4" fill="#68d391" stroke="#38a169" />
+  <text x="190" y="60" font-family="Arial" font-size="12" text-anchor="middle" fill="white">ЗС 123</text>
+  
+  <!-- TMI indicator -->
+  <rect x="230" y="40" width="60" height="30" rx="4" fill="#fc8181" stroke="#e53e3e" />
+  <text x="260" y="60" font-family="Arial" font-size="12" text-anchor="middle" fill="white">ТМИ</text>
+  
+  <!-- SEK display with alternating colors indication -->
+  <rect x="300" y="40" width="60" height="30" fill="#111" stroke="#333" />
+  <text x="330" y="55" font-family="Consolas" font-size="10" text-anchor="middle" fill="#ffff00">СЕК:</text>
+  <text x="330" y="65" font-family="Consolas" font-size="10" text-anchor="middle" fill="#ffff00">32</text>
+  
+  <!-- Control buttons (single button with state) -->
+  <rect x="370" y="40" width="100" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="420" y="60" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Старт/Стоп</text>
+  
+  <rect x="480" y="40" width="130" height="30" rx="4" fill="#fc8181" stroke="#e53e3e" />
+  <text x="545" y="60" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Звук ТМИ отключен</text>
+  
+  <!-- Settings button with cog icon -->
+  <rect x="620" y="40" width="30" height="30" rx="4" fill="#4a5568" stroke="#2d3748" />
+  <text x="635" y="60" font-family="Arial" font-size="12" text-anchor="middle" fill="white">⚙</text>
+  
+  <!-- Main content area -->
+  <rect x="0" y="80" width="800" height="450" fill="#ffffff" />
+  
+  <!-- Split between tables -->
+  <rect x="0" y="80" width="400" height="450" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+  <rect x="400" y="80" width="400" height="450" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+  
+  <!-- Left panel - Parameters -->
+  <rect x="5" y="85" width="390" height="440" fill="#f8fafc" stroke="#e2e8f0" />
+  <rect x="5" y="85" width="390" height="25" fill="#e2e8f0" />
+  <text x="15" y="102" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">Параметры на контроле</text>
+  <rect x="335" y="87" width="20" height="20" rx="2" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="345" y="102" font-family="Arial" font-size="14" text-anchor="middle" fill="#4a5568">+</text>
+  <rect x="355" y="87" width="20" height="20" rx="2" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="365" y="102" font-family="Arial" font-size="14" text-anchor="middle" fill="#4a5568">-</text>
+  <rect x="375" y="87" width="20" height="20" rx="2" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="385" y="102" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">ℹ</text>
+  
+  <!-- Parameters table header -->
+  <rect x="5" y="110" width="30" height="25" fill="#edf2f7" stroke="#e2e8f0" />
+  <text x="20" y="127" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Звук</text>
+  
+  <rect x="35" y="110" width="110" height="25" fill="#edf2f7" stroke="#e2e8f0" />
+  <text x="90" y="127" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Параметр</text>
+  
+  <rect x="145" y="110" width="250" height="25" fill="#edf2f7" stroke="#e2e8f0" />
+  <text x="270" y="127" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Условие контроля</text>
+  
+  <!-- Parameters rows - grouped by parameter name with multiple conditions -->
+  <rect x="5" y="135" width="30" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <circle cx="20" cy="147" r="8" fill="#68d391" />
+  <text x="20" y="151" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">+</text>
+  
+  <rect x="35" y="135" width="110" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="90" y="152" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">СЕК</text>
+  
+  <rect x="145" y="135" width="250" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="270" y="152" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Изменение значения</text>
+  
+  <rect x="5" y="160" width="30" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <circle cx="20" cy="172" r="8" fill="#68d391" />
+  <text x="20" y="176" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">+</text>
+  
+  <!-- Group: НОВФР with multiple conditions -->
+  <rect x="35" y="160" width="110" height="50" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="90" y="177" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">НОВФР</text>
+  
+  <rect x="145" y="160" width="250" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="270" y="177" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">Равно 0</text>
+  
+  <rect x="145" y="185" width="250" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="270" y="202" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Не равно 2</text>
+  
+  <rect x="5" y="185" width="30" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <circle cx="20" cy="197" r="8" fill="#fc8181" />
+  <text x="20" y="201" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">-</text>
+  
+  <rect x="5" y="210" width="30" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <circle cx="20" cy="222" r="8" fill="#68d391" />
+  <text x="20" y="226" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">+</text>
+  
+  <rect x="35" y="210" width="110" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="90" y="227" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">ТОК_АКБ</text>
+  
+  <rect x="145" y="210" width="250" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="270" y="227" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">0.1 <= значение <= 2.5</text>
+  
+  <rect x="5" y="235" width="30" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <circle cx="20" cy="247" r="8" fill="#68d391" />
+  <text x="20" y="251" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">+</text>
+  
+  <rect x="35" y="235" width="110" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="90" y="252" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">ТЕМП1</text>
+  
+  <rect x="145" y="235" width="250" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="270" y="252" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">значение < -10 ИЛИ значение > 50</text>
+  
+  <!-- Right panel - Events Log -->
+  <rect x="405" y="85" width="390" height="440" fill="#f8fafc" stroke="#e2e8f0" />
+  <rect x="405" y="85" width="390" height="25" fill="#e2e8f0" />
+  <text x="415" y="102" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">События</text>
+  <rect x="755" y="87" width="20" height="20" rx="2" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="765" y="102" font-family="Arial" font-size="14" text-anchor="middle" fill="#4a5568">×</text>
+  <rect x="725" y="87" width="20" height="20" rx="2" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="735" y="101" font-family="Arial" font-size="10" text-anchor="middle" fill="#4a5568">LOG</text>
+  
+  <!-- Events log table header -->
+  <rect x="405" y="110" width="90" height="25" fill="#edf2f7" stroke="#e2e8f0" />
+  <text x="450" y="127" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Дата/время</text>
+  
+  <rect x="495" y="110" width="100" height="25" fill="#edf2f7" stroke="#e2e8f0" />
+  <text x="545" y="127" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Параметр</text>
+  
+  <rect x="595" y="110" width="200" height="25" fill="#edf2f7" stroke="#e2e8f0" />
+  <text x="695" y="127" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Значение</text>
+  
+  <!-- Events log rows -->
+  <rect x="405" y="135" width="90" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="450" y="152" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">01/04 09:32:15</text>
+  
+  <rect x="495" y="135" width="100" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="545" y="152" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">СОТМ</text>
+  
+  <rect x="595" y="135" width="200" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="695" y="152" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Соединение установлено</text>
+  
+  <!-- Error state log entry -->
+  <rect x="405" y="160" width="90" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="450" y="177" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">01/04 09:32:18</text>
+  
+  <rect x="495" y="160" width="100" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="545" y="177" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">НОВФР</text>
+  
+  <rect x="595" y="160" width="200" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="695" y="177" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">0</text>
+  
+  <rect x="405" y="185" width="90" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="450" y="202" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">01/04 09:32:23</text>
+  
+  <rect x="495" y="185" width="100" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="545" y="202" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Телеметрия</text>
+  
+  <rect x="595" y="185" width="200" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="695" y="202" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Идет</text>
+  
+  <!-- Error state log entry -->
+  <rect x="405" y="210" width="90" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="450" y="227" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">01/04 09:32:30</text>
+  
+  <rect x="495" y="210" width="100" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="545" y="227" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">ТОК_АКБ</text>
+  
+  <rect x="595" y="210" width="200" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="695" y="227" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">0.05</text>
+  
+  <!-- Normal state log entry - Green for normalized parameter -->
+  <rect x="405" y="235" width="90" height="25" fill="#68d391" stroke="#e2e8f0" />
+  <text x="450" y="252" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">01/04 09:32:42</text>
+  
+  <rect x="495" y="235" width="100" height="25" fill="#68d391" stroke="#e2e8f0" />
+  <text x="545" y="252" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">ТОК_АКБ</text>
+  
+  <rect x="595" y="235" width="200" height="25" fill="#68d391" stroke="#e2e8f0" />
+  <text x="695" y="252" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">1.25 (в норме)</text>
+  
+  <!-- TMI Anomaly entry -->
+  <rect x="405" y="260" width="90" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="450" y="277" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">01/04 09:32:45</text>
+  
+  <rect x="495" y="260" width="100" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="545" y="277" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">Телеметрия</text>
+  
+  <rect x="595" y="260" width="200" height="25" fill="#fc8181" stroke="#e2e8f0" />
+  <text x="695" y="277" font-family="Arial" font-size="12" text-anchor="middle" fill="#ffffff">Аномальное изменение СЕК</text>
+  
+  <rect x="405" y="285" width="90" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="450" y="302" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">01/04 09:32:48</text>
+  
+  <rect x="495" y="285" width="100" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="545" y="302" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">СЕК</text>
+  
+  <rect x="595" y="285" width="200" height="25" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="695" y="302" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">32</text>
+</svg>

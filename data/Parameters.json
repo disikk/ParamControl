@@ -1,0 +1,57 @@
+# Configuration file for ParamControl
+# This file contains a list of parameters to be monitored
+# Format: JSON
+# Fields:
+#   - name: Parameter name
+#   - type: Parameter type (0 = Equals, 1 = NotEquals, 2 = InLimits, 3 = OutOfLimits, 4 = Changed)
+#   - target_value: Target value for comparison (string or array of strings)
+#   - sound_enabled: Whether sound alert is enabled (true/false)
+#   - sound_file: Path to sound file for alert
+#   - description: Human-readable description of parameter
+# 
+# Note: You can edit this file manually, but make sure the application is not running
+# Date: 2025-04-01T12:30:45
+
+{
+  "version": "1.0",
+  "timestamp": "2025-04-01T12:30:45",
+  "parameters": [
+    {
+      "name": "СЕК",
+      "type": 4,
+      "sound_enabled": true,
+      "sound_file": "./sounds/beep.wav",
+      "description": "Изменение значения"
+    },
+    {
+      "name": "НОВФР",
+      "type": 0,
+      "target_value": "0",
+      "sound_enabled": true,
+      "sound_file": "./sounds/danger.wav",
+      "description": "Равно 0"
+    },
+    {
+      "name": "ТОК_АКБ",
+      "type": 2,
+      "target_value": [
+        "0.1",
+        "2.5"
+      ],
+      "sound_enabled": true,
+      "sound_file": "./sounds/warning.wav",
+      "description": "0.1 <= значение <= 2.5"
+    },
+    {
+      "name": "ТЕМП1",
+      "type": 3,
+      "target_value": [
+        "-10",
+        "50"
+      ],
+      "sound_enabled": true,
+      "sound_file": "./sounds/alert.wav",
+      "description": "значение < -10 ИЛИ значение > 50"
+    }
+  ]
+}

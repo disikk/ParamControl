@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 420">
+  <!-- Dialog background -->
+  <rect width="500" height="420" fill="#ffffff" stroke="#e0e0e0" stroke-width="1" />
+  
+  <!-- Dialog title bar -->
+  <rect x="0" y="0" width="500" height="30" fill="#3273dc" />
+  <text x="10" y="20" font-family="Arial" font-size="14" fill="white">Карточка параметра</text>
+  
+  <!-- Parameter info section -->
+  <text x="20" y="50" font-family="Arial" font-size="18" font-weight="bold" fill="#4a5568">НОВФР</text>
+  
+  <!-- Parameter description -->
+  <rect x="20" y="65" width="460" height="120" fill="#fff8e6" stroke="#fbd38d" rx="4" />
+  <text x="30" y="85" font-family="Arial" font-size="14" font-weight="bold" fill="#744210">Описание:</text>
+  <text x="30" y="110" font-family="Arial" font-size="12" fill="#744210">Номер в формате. Десятичное значение от 0 до 3.</text>
+  <text x="30" y="130" font-family="Arial" font-size="12" fill="#744210">Значение "0" сигнализирует об отключении форматирования.</text>
+  <text x="30" y="150" font-family="Arial" font-size="12" fill="#744210">См. документацию СОТМ: раздел 3.4, стр. 42-43</text>
+  <text x="30" y="170" font-family="Arial" font-size="12" fill="#744210">Нормальное значение: "1" в штатном режиме</text>
+  
+  <!-- Monitoring conditions section -->
+  <text x="20" y="210" font-family="Arial" font-size="14" font-weight="bold" fill="#4a5568">Условия контроля:</text>
+  
+  <!-- Conditions table -->
+  <rect x="20" y="225" width="460" height="30" fill="#edf2f7" stroke="#e2e8f0" />
+  <text x="80" y="245" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">Условие</text>
+  <text x="240" y="245" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">Звук</text>
+  <text x="350" y="245" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">Статус</text>
+  
+  <!-- Condition rows -->
+  <rect x="20" y="255" width="460" height="30" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="80" y="275" font-family="Arial" font-size="12" fill="#fc8181">Равно 0</text>
+  <text x="240" y="275" font-family="Arial" font-size="12" fill="#4a5568">alert.wav</text>
+  <text x="350" y="275" font-family="Arial" font-size="12" fill="#fc8181">ОШИБКА</text>
+  
+  <rect x="20" y="285" width="460" height="30" fill="#ffffff" stroke="#e2e8f0" />
+  <text x="80" y="305" font-family="Arial" font-size="12" fill="#4a5568">Не равно 2</text>
+  <text x="240" y="305" font-family="Arial" font-size="12" fill="#4a5568">warning.wav</text>
+  <text x="350" y="305" font-family="Arial" font-size="12" fill="#68d391">ОК</text>
+  
+  <!-- Current value section -->
+  <rect x="20" y="330" width="460" height="40" fill="#f7fafc" stroke="#e2e8f0" rx="4" />
+  <text x="30" y="355" font-family="Arial" font-size="14" font-weight="bold" fill="#4a5568">Текущее значение:</text>
+  <text x="190" y="355" font-family="Arial" font-size="14" fill="#fc8181">0</text>
+  <text x="250" y="355" font-family="Arial" font-size="12" fill="#fc8181">с 01/04/2025 09:32:18</text>
+  
+  <!-- Dialog button -->
+  <rect x="380" y="380" width="100" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="430" y="400" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Закрыть</text>
+</svg>

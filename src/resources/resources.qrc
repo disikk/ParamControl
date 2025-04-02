@@ -1,0 +1,29 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <!-- Иконки -->
+        <file>resources/icons/app_icon.ico</file>
+        <file>resources/icons/sound_on.png</file>
+        <file>resources/icons/sound_off.png</file>
+        <file>resources/icons/splash.png</file>
+        <file>resources/icons/add.png</file>
+        <file>resources/icons/edit.png</file>
+        <file>resources/icons/delete.png</file>
+        <file>resources/icons/settings.png</file>
+        <file>resources/icons/refresh.png</file>
+        <file>resources/icons/connect.png</file>
+        <file>resources/icons/disconnect.png</file>
+        <file>resources/icons/start.png</file>
+        <file>resources/icons/stop.png</file>
+        <file>resources/icons/info.png</file>
+        <file>resources/icons/error.png</file>
+        <file>resources/icons/ok.png</file>
+        <file>resources/icons/warning.png</file>
+        
+        <!-- Звуковые файлы -->
+        <file>resources/sounds/alert.wav</file>
+        <file>resources/sounds/beep.wav</file>
+        <file>resources/sounds/notmi.wav</file>
+        <file>resources/sounds/warning.wav</file>
+    </qresource>
+</RCC>

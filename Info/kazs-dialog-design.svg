@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 250">
+  <!-- Dialog background -->
+  <rect width="350" height="250" fill="#ffffff" stroke="#e0e0e0" stroke-width="1" />
+  
+  <!-- Dialog title bar -->
+  <rect x="0" y="0" width="350" height="30" fill="#3273dc" />
+  <text x="10" y="20" font-family="Arial" font-size="14" fill="white">Выбор КА и ЗС</text>
+  
+  <!-- Dialog content -->
+  <text x="30" y="60" font-family="Arial" font-size="14" font-weight="bold" fill="#4a5568">Выберите КА и ЗС для работы</text>
+  
+  <text x="30" y="100" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">Номер КА:</text>
+  <rect x="150" y="85" width="170" height="30" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  
+  <!-- Dropdown icon -->
+  <rect x="290" y="85" width="30" height="30" fill="#f7fafc" stroke="#cbd5e0" rx="0" />
+  <path d="M295,100 L305,100 L300,105 Z" fill="#4a5568" />
+  
+  <text x="160" y="105" font-family="Arial" font-size="12" fill="#4a5568">101</text>
+  
+  <text x="30" y="145" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">Номер ЗС:</text>
+  <rect x="150" y="130" width="170" height="30" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  
+  <!-- Dropdown icon -->
+  <rect x="290" y="130" width="30" height="30" fill="#f7fafc" stroke="#cbd5e0" rx="0" />
+  <path d="M295,145 L305,145 L300,150 Z" fill="#4a5568" />
+  
+  <text x="160" y="150" font-family="Arial" font-size="12" fill="#4a5568">123</text>
+  
+  <!-- Warning message -->
+  <rect x="20" y="175" width="310" height="30" fill="#fffaf0" stroke="#fbd38d" rx="4" />
+  <text x="30" y="195" font-family="Arial" font-size="12" fill="#744210">Потребуется перезапуск приложения!</text>
+  
+  <!-- Dialog buttons -->
+  <rect x="125" y="210" width="100" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="175" y="230" font-family="Arial" font-size="12" text-anchor="middle" fill="white">OK</text>
+  
+  <rect x="235" y="210" width="100" height="30" rx="4" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="285" y="230" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Отмена</text>
+</svg>

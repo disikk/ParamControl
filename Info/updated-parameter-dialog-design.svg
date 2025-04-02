@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 550">
+  <!-- Dialog background -->
+  <rect width="500" height="550" fill="#ffffff" stroke="#e0e0e0" stroke-width="1" />
+  
+  <!-- Dialog title bar -->
+  <rect x="0" y="0" width="500" height="30" fill="#3273dc" />
+  <text x="10" y="20" font-family="Arial" font-size="14" fill="white">Редактирование параметра</text>
+  
+  <!-- Parameter name section -->
+  <text x="20" y="50" font-family="Arial" font-size="14" font-weight="bold" fill="#4a5568">Название параметра:</text>
+  <rect x="20" y="60" width="460" height="30" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  <text x="30" y="80" font-family="Arial" font-size="12" fill="#4a5568">НОВФР</text>
+  
+  <!-- Control method section -->
+  <text x="20" y="110" font-family="Arial" font-size="14" font-weight="bold" fill="#4a5568">Метод контроля:</text>
+  
+  <!-- Radio buttons for control methods -->
+  <circle cx="30" cy="130" r="8" fill="#ffffff" stroke="#3273dc" stroke-width="2" />
+  <circle cx="30" cy="130" r="4" fill="#3273dc" />
+  <text x="45" y="135" font-family="Arial" font-size="12" fill="#4a5568">Равен:</text>
+  <rect x="120" y="120" width="360" height="25" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  <text x="130" y="137" font-family="Arial" font-size="12" fill="#4a5568">0</text>
+  
+  <circle cx="30" cy="160" r="8" fill="#ffffff" stroke="#3273dc" stroke-width="2" />
+  <text x="45" y="165" font-family="Arial" font-size="12" fill="#4a5568">Не равен:</text>
+  <rect x="120" y="150" width="360" height="25" fill="#edf2f7" stroke="#cbd5e0" rx="4" />
+  
+  <circle cx="30" cy="190" r="8" fill="#ffffff" stroke="#3273dc" stroke-width="2" />
+  <text x="45" y="195" font-family="Arial" font-size="12" fill="#4a5568">Лежит в пределах:</text>
+  
+  <rect x="30" y="205" width="150" height="25" fill="#edf2f7" stroke="#cbd5e0" rx="4" />
+  <text x="105" y="222" font-family="Arial" font-size="12" text-anchor="middle" fill="#a0aec0">нижний предел</text>
+  
+  <text x="195" y="222" font-family="Arial" font-size="12" fill="#4a5568"><=  значение  <=</text>
+  
+  <rect x="320" y="205" width="150" height="25" fill="#edf2f7" stroke="#cbd5e0" rx="4" />
+  <text x="395" y="222" font-family="Arial" font-size="12" text-anchor="middle" fill="#a0aec0">верхний предел</text>
+  
+  <circle cx="30" cy="250" r="8" fill="#ffffff" stroke="#3273dc" stroke-width="2" />
+  <text x="45" y="255" font-family="Arial" font-size="12" fill="#4a5568">Запрещенный диапазон:</text>
+  
+  <text x="45" y="280" font-family="Arial" font-size="12" fill="#4a5568">от</text>
+  <rect x="65" y="265" width="115" height="25" fill="#edf2f7" stroke="#cbd5e0" rx="4" />
+  
+  <text x="210" y="280" font-family="Arial" font-size="12" fill="#4a5568">до</text>
+  <rect x="235" y="265" width="115" height="25" fill="#edf2f7" stroke="#cbd5e0" rx="4" />
+  
+  <circle cx="30" cy="310" r="8" fill="#ffffff" stroke="#3273dc" stroke-width="2" />
+  <text x="45" y="315" font-family="Arial" font-size="12" fill="#4a5568">Фиксация каждого изменения</text>
+  
+  <!-- Parameter description section -->
+  <text x="20" y="350" font-family="Arial" font-size="14" font-weight="bold" fill="#4a5568">Описание параметра:</text>
+  <rect x="20" y="360" width="460" height="90" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  <text x="30" y="380" font-family="Arial" font-size="12" fill="#4a5568">Номер в формате. Десятичное значение от 0 до 3.</text>
+  <text x="30" y="400" font-family="Arial" font-size="12" fill="#4a5568">Значение "0" сигнализирует об отключении форматирования.</text>
+  <text x="30" y="420" font-family="Arial" font-size="12" fill="#4a5568">См. документацию СОТМ: раздел 3.4, стр. 42-43</text>
+  <text x="30" y="440" font-family="Arial" font-size="12" fill="#4a5568">Нормальное значение: "1" в штатном режиме</text>
+  
+  <!-- Sound settings -->
+  <rect x="20" y="460" width="460" height="50" fill="#f8fafc" stroke="#e2e8f0" rx="4" />
+  <text x="30" y="480" font-family="Arial" font-size="12" font-weight="bold" fill="#4a5568">Звуковое оповещение</text>
+  
+  <rect x="25" y="490" width="350" height="25" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  <text x="30" y="507" font-family="Arial" font-size="12" fill="#4a5568">/path/to/alert.wav</text>
+  
+  <rect x="380" y="490" width="95" height="25" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="425" y="507" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Выбрать</text>
+  
+  <!-- Dialog buttons -->
+  <rect x="280" y="525" width="100" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="330" y="545" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Сохранить</text>
+  
+  <rect x="390" y="525" width="100" height="30" rx="4" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="440" y="545" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Отмена</text>
+</svg>

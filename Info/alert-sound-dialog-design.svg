@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 350">
+  <!-- Dialog background -->
+  <rect width="450" height="350" fill="#ffffff" stroke="#e0e0e0" stroke-width="1" />
+  
+  <!-- Dialog title bar -->
+  <rect x="0" y="0" width="450" height="30" fill="#3273dc" />
+  <text x="10" y="20" font-family="Arial" font-size="14" fill="white">Настройка звуковых оповещений</text>
+  
+  <!-- Sound settings -->
+  <text x="20" y="50" font-family="Arial" font-size="14" font-weight="bold" fill="#4a5568">Звуковые файлы для разных типов событий</text>
+  
+  <!-- No TMI sound -->
+  <text x="20" y="85" font-family="Arial" font-size="12" fill="#4a5568">Звук пропадания ТМИ:</text>
+  <rect x="20" y="95" width="320" height="30" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  <text x="30" y="115" font-family="Arial" font-size="12" fill="#4a5568">/path/to/notmi.wav</text>
+  
+  <rect x="350" y="95" width="80" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="390" y="115" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Выбрать</text>
+  
+  <!-- Default warning sound -->
+  <text x="20" y="145" font-family="Arial" font-size="12" fill="#4a5568">Звук по умолчанию для предупреждений:</text>
+  <rect x="20" y="155" width="320" height="30" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  <text x="30" y="175" font-family="Arial" font-size="12" fill="#4a5568">/path/to/warning.wav</text>
+  
+  <rect x="350" y="155" width="80" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="390" y="175" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Выбрать</text>
+  
+  <!-- Default error sound -->
+  <text x="20" y="205" font-family="Arial" font-size="12" fill="#4a5568">Звук по умолчанию для ошибок:</text>
+  <rect x="20" y="215" width="320" height="30" fill="#ffffff" stroke="#cbd5e0" rx="4" />
+  <text x="30" y="235" font-family="Arial" font-size="12" fill="#4a5568">/path/to/error.wav</text>
+  
+  <rect x="350" y="215" width="80" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="390" y="235" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Выбрать</text>
+  
+  <!-- Global sound settings -->
+  <rect x="20" y="265" width="410" height="40" fill="#f7fafc" stroke="#e2e8f0" rx="4" />
+  
+  <rect x="30" y="275" width="20" height="20" fill="#ffffff" stroke="#3273dc" rx="2" />
+  <rect x="33" y="278" width="14" height="14" fill="#3273dc" rx="1" />
+  <text x="60" y="290" font-family="Arial" font-size="12" fill="#4a5568">Включить звуковые оповещения</text>
+  
+  <rect x="250" y="275" width="20" height="20" fill="#ffffff" stroke="#3273dc" rx="2" />
+  <text x="280" y="290" font-family="Arial" font-size="12" fill="#4a5568">Повторять звук</text>
+  
+  <!-- Dialog buttons -->
+  <rect x="230" y="310" width="100" height="30" rx="4" fill="#3273dc" stroke="#2251a6" />
+  <text x="280" y="330" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Сохранить</text>
+  
+  <rect x="340" y="310" width="100" height="30" rx="4" fill="#e2e8f0" stroke="#cbd5e0" />
+  <text x="390" y="330" font-family="Arial" font-size="12" text-anchor="middle" fill="#4a5568">Отмена</text>
+</svg>
