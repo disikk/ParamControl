@@ -11,6 +11,7 @@ MonitoringService::MonitoringService(
     std::shared_ptr<XmlParser> xmlParser,
     std::shared_ptr<AlertManager> alertManager,
     std::shared_ptr<LogManager> logManager,
+    std::shared_ptr<TmiAnalyzer> tmiAnalyzer,
     QObject* parent)
     : QObject(parent)
     , m_sotmClient(std::move(sotmClient))
@@ -18,12 +19,14 @@ MonitoringService::MonitoringService(
     , m_xmlParser(std::move(xmlParser))
     , m_alertManager(std::move(alertManager))
     , m_logManager(std::move(logManager))
+    , m_tmiAnalyzer(std::move(tmiAnalyzer))
     , m_monitoringTimer(new QTimer(this))
     , m_watchdogTimer(new QTimer(this))
     , m_paramListRefreshTimer(new QTimer(this))
     , m_running(false)
     , m_watchdogTriggered(false)
     , m_parameterListChanged(false)
+    , m_tmiStatus(true)
 {
     // Настраиваем таймер мониторинга
     m_monitoringTimer->setInterval(MONITORING_INTERVAL_MS);
@@ -49,6 +52,12 @@ MonitoringService::MonitoringService(
             this, &MonitoringService::onParameterListChanged);
     connect(m_parameterModel.get(), &ParameterModel::parameterUpdated,
             this, &MonitoringService::onParameterListChanged);
+            
+    // Подключаем сигналы TmiAnalyzer
+    connect(m_tmiAnalyzer.get(), &TmiAnalyzer::tmiStatusChanged,
+            this, &MonitoringService::onTmiAnalyzerStatusChanged);
+    connect(m_tmiAnalyzer.get(), &TmiAnalyzer::anomalyDetected,
+            this, &MonitoringService::onTmiAnomalyDetected);
 }
 
 MonitoringService::~MonitoringService() {
@@ -64,7 +73,7 @@ void MonitoringService::start() {
     if (!m_sotmClient->isConnected()) {
         // Пытаемся подключиться
         if (!m_sotmClient->connect(m_sotmClient->getSettings())) {
-            m_logManager->log(LogLevel::Error, "Соед. с СОТМ", "Не удалось подключиться к СОТМ", "", false);
+            m_logManager->log(LogLevel::Error, "Соед. с СОТМ", "Не удалось подключиться к СОТМ", "", LogStatus::Error);
             return;
         }
     }
@@ -72,6 +81,13 @@ void MonitoringService::start() {
     m_running = true;
     m_watchdogTriggered = false;
     m_parameterListChanged = true; // Инициируем первоначальную загрузку списка параметров
+    
+    // Сбрасываем анализатор ТМИ
+    m_tmiAnalyzer->reset();
+    
+    // Устанавливаем начальный статус ТМИ
+    m_tmiStatus = true;
+    emit tmiStatusChanged(m_tmiStatus);
     
     // Инициализируем список параметров
     refreshParameterList();
@@ -135,12 +151,18 @@ void MonitoringService::checkParameters() {
     auto responseOpt = m_sotmClient->sendRequest(requestData);
     if (!responseOpt) {
         // Ошибка при отправке запроса
-        m_logManager->log(LogLevel::Error, "СОТМ", "Ошибка при отправке запроса", "", false);
+        m_logManager->log(LogLevel::Error, "СОТМ", "Ошибка при отправке запроса", "", LogStatus::Error);
         emit connectionStatusChanged(false);
         
         // Включаем оповещение о проблемах с ТМИ
         m_alertManager->playAlert(AlertType::NoTmi);
-        emit tmiStatusChanged(false);
+        
+        // Обновляем статус ТМИ
+        if (m_tmiStatus) {
+            m_tmiStatus = false;
+            emit tmiStatusChanged(false);
+        }
+        
         return;
     }
     
@@ -150,31 +172,47 @@ void MonitoringService::checkParameters() {
         parameterValues = m_xmlParser->parseParameterResponse(*responseOpt);
     } catch (const std::exception& e) {
         m_logManager->log(LogLevel::Error, "СОТМ", 
-                          QString("Ошибка при разборе ответа: %1").arg(e.what()), "", false);
+                          QString("Ошибка при разборе ответа: %1").arg(e.what()), "", LogStatus::Error);
         
         // Включаем оповещение о проблемах с ТМИ
         m_alertManager->playAlert(AlertType::NoTmi);
-        emit tmiStatusChanged(false);
+        
+        // Обновляем статус ТМИ
+        if (m_tmiStatus) {
+            m_tmiStatus = false;
+            emit tmiStatusChanged(false);
+        }
+        
         return;
     }
     
     // Если ответ пустой, считаем что проблемы с ТМИ
     if (parameterValues.isEmpty()) {
-        m_logManager->log(LogLevel::Error, "СОТМ", "Пустой ответ от СОТМ", "", false);
+        m_logManager->log(LogLevel::Error, "СОТМ", "Пустой ответ от СОТМ", "", LogStatus::Error);
         
         // Включаем оповещение о проблемах с ТМИ
         m_alertManager->playAlert(AlertType::NoTmi);
-        emit tmiStatusChanged(false);
+        
+        // Обновляем статус ТМИ
+        if (m_tmiStatus) {
+            m_tmiStatus = false;
+            emit tmiStatusChanged(false);
+        }
+        
         return;
     }
     
     // ТМИ в порядке, выключаем оповещение
     m_alertManager->stopAlert(AlertType::NoTmi);
-    emit tmiStatusChanged(true);
     
-    // Проверяем параметр СЕК
+    // Проверяем параметр СЕК для определения аномалий в ТМИ
     for (const auto& paramValue : parameterValues) {
         if (paramValue.name == "СЕК") {
+            // Анализируем значение СЕК через TmiAnalyzer
+            bool tmiOk = m_tmiAnalyzer->analyzeSek(paramValue.value.toString());
+            
+            // Если статус изменился, уведомление произойдет через сигнал tmiStatusChanged
+            
             // Сигнализируем об изменении значения СЕК
             emit parameterValueChanged(paramValue.name, paramValue.value);
             break;
@@ -195,7 +233,7 @@ void MonitoringService::onWatchdogTimeout() {
     m_watchdogTriggered = true;
     
     m_logManager->log(LogLevel::Error, "Мониторинг", 
-                      "Сработал сторожевой таймер - перезапуск мониторинга", "", false);
+                      "Сработал сторожевой таймер - перезапуск мониторинга", "", LogStatus::Error);
     
     // Останавливаем и перезапускаем мониторинг
     stop();
@@ -216,7 +254,7 @@ void MonitoringService::refreshParameterList() {
         m_parameterListChanged = false;
         
         // Логируем обновление списка
-        m_logManager->log(LogLevel::Debug, "Мониторинг", 
+        m_logManager->log(LogLevel::Info, "Мониторинг", 
                           QString("Обновлен список контролируемых параметров (%1)")
                           .arg(m_currentParameterNames.size()));
         
@@ -242,6 +280,80 @@ void MonitoringService::onParameterListChanged(const QString& name, ParameterTyp
         default: typeStr = "Unknown"; break;
     }
     
-    m_logManager->log(LogLevel::Debug, "Мониторинг", 
+    m_logManager->log(LogLevel::Info, "Мониторинг", 
                      QString("Изменен список параметров: %1 (%2)").arg(name).arg(typeStr));
+}
+
+void MonitoringService::onTmiAnalyzerStatusChanged(bool status) {
+    // Если статус ТМИ изменился
+    if (status != m_tmiStatus) {
+        m_tmiStatus = status;
+        
+        // Логируем изменение статуса
+        m_logManager->log(
+            m_tmiStatus ? LogLevel::Info : LogLevel::Error,
+            "Телеметрия",
+            m_tmiStatus ? "ТМИ в порядке" : "Проблемы с ТМИ",
+            "",
+            m_tmiStatus ? LogStatus::Normal : LogStatus::Error
+        );
+        
+        // Сигнализируем об изменении статуса
+        emit tmiStatusChanged(m_tmiStatus);
+        
+        // Если с ТМИ проблемы, воспроизводим звук
+        if (!m_tmiStatus) {
+            m_alertManager->playAlert(AlertType::NoTmi, true); // циклическое воспроизведение
+        } else {
+            // Если ТМИ в порядке, останавливаем звук
+            m_alertManager->stopAlert(AlertType::NoTmi);
+        }
+    }
+}
+
+void MonitoringService::onTmiAnomalyDetected(int type, const QString& message) {
+    // Логируем аномалию
+    m_logManager->log(
+        LogLevel::Error,
+        "Телеметрия",
+        QString("Аномалия ТМИ тип %1: %2").arg(type).arg(message),
+        "",
+        LogStatus::Error
+    );
+}
+
+bool MonitoringService::isRunning() const {
+    return m_running;
+}
+
+void MonitoringService::setPollingInterval(int interval) {
+    if (interval > 0) {
+        MONITORING_INTERVAL_MS = interval;
+        
+        // Если мониторинг запущен, перезапускаем таймер
+        if (m_running && m_monitoringTimer->isActive()) {
+            m_monitoringTimer->setInterval(interval);
+            m_monitoringTimer->start();
+        }
+    }
+}
+
+int MonitoringService::getPollingInterval() const {
+    return MONITORING_INTERVAL_MS;
+}
+
+void MonitoringService::setWatchdogTimeout(int timeout) {
+    if (timeout > 0) {
+        WATCHDOG_TIMEOUT_MS = timeout;
+        
+        // Если сторожевой таймер активен, перезапускаем его
+        if (m_watchdogTimer->isActive()) {
+            m_watchdogTimer->setInterval(timeout);
+            resetWatchdog();
+        }
+    }
+}
+
+int MonitoringService::getWatchdogTimeout() const {
+    return WATCHDOG_TIMEOUT_MS;
 }

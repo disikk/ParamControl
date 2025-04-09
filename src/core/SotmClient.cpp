@@ -3,6 +3,7 @@
 #include <QHostAddress>
 #include <QDataStream>
 #include <QElapsedTimer>
+#include <QDebug>
 
 // Константы протокола СОТМ
 constexpr quint8 DIRECTORY_NUMBER = 158;
@@ -10,15 +11,23 @@ constexpr quint16 INFORMATION_TYPE = 1888;
 constexpr int HEADER_LENGTH = 25;
 constexpr int DEFAULT_TIMEOUT_MS = 5000;
 constexpr int DEFAULT_CONNECT_TIMEOUT_MS = 10000;
+constexpr int RECONNECT_DELAY_MS = 5000;
+
+namespace ParamControl {
 
 SotmClient::SotmClient(QObject* parent)
     : QObject(parent)
     , m_socket(new QTcpSocket())
     , m_connectionTimeoutTimer(new QTimer(this))
+    , m_reconnectTimer(new QTimer(this))
 {
     // Настройка таймера таймаута подключения
     m_connectionTimeoutTimer->setSingleShot(true);
     m_settings.responseTimeoutMs = DEFAULT_TIMEOUT_MS;
+    
+    // Настройка таймера переподключения
+    m_reconnectTimer->setSingleShot(true);
+    m_reconnectTimer->setInterval(RECONNECT_DELAY_MS);
     
     // Подключение сигналов сокета
     connect(m_socket.get(), &QTcpSocket::stateChanged,
@@ -27,6 +36,8 @@ SotmClient::SotmClient(QObject* parent)
             this, &SotmClient::onSocketError);
     connect(m_connectionTimeoutTimer, &QTimer::timeout,
             this, &SotmClient::onConnectionTimeout);
+    connect(m_reconnectTimer, &QTimer::timeout,
+            this, &SotmClient::onReconnectTimerTimeout);
 }
 
 SotmClient::~SotmClient() {
@@ -45,12 +56,22 @@ bool SotmClient::connect(const SotmSettings& settings) {
     // Запускаем таймер таймаута
     m_connectionTimeoutTimer->start(DEFAULT_CONNECT_TIMEOUT_MS);
     
+    // Останавливаем таймер переподключения, если он активен
+    if (m_reconnectTimer->isActive()) {
+        m_reconnectTimer->stop();
+    }
+    
     // Пытаемся подключиться
     m_socket->connectToHost(QHostAddress(settings.ipAddress), settings.port);
     
     // Ждем подключения
     if (!m_socket->waitForConnected(DEFAULT_CONNECT_TIMEOUT_MS)) {
-        emit errorOccurred(QString("Не удалось подключиться к СОТМ: %1").arg(m_socket->errorString()));
+        QString errorMsg = QString("Не удалось подключиться к СОТМ: %1").arg(m_socket->errorString());
+        emit errorOccurred(errorMsg);
+        
+        // Запускаем таймер переподключения
+        m_reconnectTimer->start();
+        
         return false;
     }
     
@@ -62,6 +83,11 @@ bool SotmClient::connect(const SotmSettings& settings) {
 }
 
 void SotmClient::disconnect() {
+    // Останавливаем таймер переподключения
+    if (m_reconnectTimer->isActive()) {
+        m_reconnectTimer->stop();
+    }
+    
     if (m_socket->state() != QAbstractSocket::UnconnectedState) {
         m_socket->disconnectFromHost();
         
@@ -82,6 +108,10 @@ std::optional<QByteArray> SotmClient::sendRequest(const QByteArray& requestData)
     // Проверяем, подключены ли мы
     if (!isConnected()) {
         emit errorOccurred("Нет подключения к СОТМ");
+        
+        // Пытаемся восстановить соединение
+        m_reconnectTimer->start();
+        
         return std::nullopt;
     }
     
@@ -103,12 +133,20 @@ std::optional<QByteArray> SotmClient::sendRequest(const QByteArray& requestData)
     
     if (!m_socket->waitForBytesWritten(m_settings.responseTimeoutMs)) {
         emit errorOccurred("Таймаут отправки данных");
+        
+        // Проверяем состояние соединения
+        checkConnection();
+        
         return std::nullopt;
     }
     
     // Ждем ответа
     if (!waitForReadyRead(m_settings.responseTimeoutMs)) {
         emit errorOccurred("Таймаут ожидания ответа");
+        
+        // Проверяем состояние соединения
+        checkConnection();
+        
         return std::nullopt;
     }
     
@@ -117,12 +155,20 @@ std::optional<QByteArray> SotmClient::sendRequest(const QByteArray& requestData)
     while (headerBuffer.size() < HEADER_LENGTH) {
         if (!m_socket->bytesAvailable() && !waitForReadyRead(m_settings.responseTimeoutMs)) {
             emit errorOccurred("Таймаут чтения заголовка ответа");
+            
+            // Проверяем состояние соединения
+            checkConnection();
+            
             return std::nullopt;
         }
         
         QByteArray chunk = m_socket->read(HEADER_LENGTH - headerBuffer.size());
         if (chunk.isEmpty()) {
             emit errorOccurred("Ошибка чтения заголовка ответа");
+            
+            // Проверяем состояние соединения
+            checkConnection();
+            
             return std::nullopt;
         }
         
@@ -148,12 +194,20 @@ std::optional<QByteArray> SotmClient::sendRequest(const QByteArray& requestData)
     while (appPacket.size() < appPacketLength) {
         if (!m_socket->bytesAvailable() && !waitForReadyRead(m_settings.responseTimeoutMs)) {
             emit errorOccurred("Таймаут чтения данных ответа");
+            
+            // Проверяем состояние соединения
+            checkConnection();
+            
             return std::nullopt;
         }
         
         QByteArray chunk = m_socket->read(appPacketLength - appPacket.size());
         if (chunk.isEmpty()) {
             emit errorOccurred("Ошибка чтения данных ответа");
+            
+            // Проверяем состояние соединения
+            checkConnection();
+            
             return std::nullopt;
         }
         
@@ -174,15 +228,28 @@ void SotmClient::setSettings(const SotmSettings& settings) {
 void SotmClient::onSocketStateChanged(QAbstractSocket::SocketState state) {
     if (state == QAbstractSocket::ConnectedState) {
         emit connectionStatusChanged(true);
+        qDebug() << "СОТМ: Соединение установлено";
     } else if (state == QAbstractSocket::UnconnectedState) {
         emit connectionStatusChanged(false);
+        qDebug() << "СОТМ: Соединение закрыто";
+        
+        // Запускаем автоматическое переподключение, если таймер не активен
+        if (!m_reconnectTimer->isActive()) {
+            m_reconnectTimer->start();
+        }
     }
 }
 
 void SotmClient::onSocketError(QAbstractSocket::SocketError error) {
     Q_UNUSED(error);
-    emit errorOccurred(m_socket->errorString());
+    QString errorMsg = QString("Ошибка сокета: %1").arg(m_socket->errorString());
+    emit errorOccurred(errorMsg);
     emit connectionStatusChanged(false);
+    
+    // Запускаем автоматическое переподключение
+    if (!m_reconnectTimer->isActive()) {
+        m_reconnectTimer->start();
+    }
 }
 
 void SotmClient::onConnectionTimeout() {
@@ -190,7 +257,18 @@ void SotmClient::onConnectionTimeout() {
         m_socket->abort();
         emit errorOccurred("Таймаут подключения к СОТМ");
         emit connectionStatusChanged(false);
+        
+        // Запускаем автоматическое переподключение
+        if (!m_reconnectTimer->isActive()) {
+            m_reconnectTimer->start();
+        }
     }
+}
+
+void SotmClient::onReconnectTimerTimeout() {
+    // Пытаемся переподключиться
+    qDebug() << "СОТМ: Попытка переподключения...";
+    connect(m_settings);
 }
 
 QByteArray SotmClient::createHeaderPacket(quint16 appPacketLength) const {
@@ -237,3 +315,33 @@ bool SotmClient::waitForReadyRead(int timeout) {
     
     return true;
 }
+
+void SotmClient::checkConnection() {
+    // Проверяем состояние сокета
+    if (m_socket->state() != QAbstractSocket::ConnectedState) {
+        emit connectionStatusChanged(false);
+        
+        // Запускаем автоматическое переподключение
+        if (!m_reconnectTimer->isActive()) {
+            m_reconnectTimer->start();
+        }
+    } else {
+        // Проверка соединения с помощью Poll
+        bool part1 = m_socket->waitForReadyRead(0);
+        bool part2 = (m_socket->bytesAvailable() == 0);
+        
+        if (!part1 && part2) {
+            // Соединение разорвано
+            m_socket->abort();
+            emit connectionStatusChanged(false);
+            emit errorOccurred("Соединение с СОТМ разорвано");
+            
+            // Запускаем автоматическое переподключение
+            if (!m_reconnectTimer->isActive()) {
+                m_reconnectTimer->start();
+            }
+        }
+    }
+}
+
+} // namespace ParamControl
