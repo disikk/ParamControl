@@ -1,0 +1,19 @@
+--- src/ui/MainWindow.h
++++ src/ui/MainWindow.h
+@@ -21,7 +21,14 @@ class MainWindow : public QMainWindow {
+     Q_OBJECT
+
+ public:
+-    explicit MainWindow(QWidget* parent = nullptr);
++    explicit MainWindow(
++        std::shared_ptr<ParameterModel> parameterModel,
++        std::shared_ptr<SotmClient> sotmClient,
++        std::shared_ptr<MonitoringService> monitoringService,
++        std::shared_ptr<AlertManager> alertManager,
++        std::shared_ptr<LogManager> logManager,
++        std::shared_ptr<UpdateManager> updateManager,
++        std::shared_ptr<TmiAnalyzer> tmiAnalyzer,
++        QWidget* parent = nullptr);
+     ~MainWindow();
+
+ private slots:

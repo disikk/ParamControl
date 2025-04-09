@@ -13,22 +13,29 @@
 #include "ConnectionDialog.h"
 #include "LogDialog.h"
 #include "KaZsDialog.h"
-#include "MessageBox.h"
+#include "ParameterCardView.h"
 
-MainWindow::MainWindow(QWidget* parent)
+MainWindow::MainWindow(
+    std::shared_ptr<ParameterModel> parameterModel,
+    std::shared_ptr<SotmClient> sotmClient,
+    std::shared_ptr<MonitoringService> monitoringService,
+    std::shared_ptr<AlertManager> alertManager,
+    std::shared_ptr<LogManager> logManager,
+    std::shared_ptr<UpdateManager> updateManager,
+    std::shared_ptr<TmiAnalyzer> tmiAnalyzer,
+    QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , m_parameterModel(std::make_shared<ParameterModel>())
-    , m_sotmClient(std::make_shared<SotmClient>())
-    , m_logManager(std::make_shared<LogManager>())
-    , m_alertManager(std::make_shared<AlertManager>())
+    , m_monitoringService(monitoringService)
+    , m_parameterModel(parameterModel)
+    , m_sotmClient(sotmClient)
+    , m_logManager(logManager)
+    , m_alertManager(alertManager)
     , m_xmlParser(std::make_shared<XmlParser>())
+    , m_updateManager(updateManager)
+    , m_tmiAnalyzer(tmiAnalyzer)
 {
     ui->setupUi(this);
-    
-    // Создаем сервис мониторинга
-    m_monitoringService = std::make_shared<MonitoringService>(
-        m_sotmClient, m_parameterModel, m_xmlParser, m_alertManager, m_logManager, this);
     
     // Создаем модели для таблиц
     m_parameterTableModel = std::make_unique<ParameterTableModel>(m_parameterModel);
@@ -47,15 +54,29 @@ MainWindow::MainWindow(QWidget* parent)
     m_logManager->initialize(QString("LOG_%1.txt").arg(m_sotmClient->getSettings().kaNumber));
     
     // Устанавливаем звук для оповещения о пропадании ТМИ
-    m_alertManager->setAlertSound(AlertType::NoTmi, ui->textBoxNoTmiSound->text());
+    if (ui->textBoxNoTmiSound && !ui->textBoxNoTmiSound->text().isEmpty()) {
+        m_alertManager->setAlertSound(AlertType::NoTmi, ui->textBoxNoTmiSound->text());
+    }
     
     // Устанавливаем заголовок окна
-    setWindowTitle(QString("КА: %1   ЗС: %2")
+    setWindowTitle(QString("ParamControl - КА: %1 ЗС: %2")
                  .arg(m_sotmClient->getSettings().kaNumber)
                  .arg(m_sotmClient->getSettings().zsNumber));
     
     // Обновляем индикаторы
     updateStatusIndicators();
+    
+    // Обновляем статус кнопки звука ТМИ
+    updateTmiSoundButton();
+    
+    // Соединяем TmiAnalyzer с обработкой событий
+    connect(m_tmiAnalyzer.get(), &TmiAnalyzer::tmiStatusChanged,
+            this, &MainWindow::onTmiStatusChanged);
+    connect(m_tmiAnalyzer.get(), &TmiAnalyzer::anomalyDetected,
+            [this](int type, const QString& message) {
+                m_logManager->log(LogLevel::Error, "Телеметрия", 
+                                 QString("Аномалия ТМИ: %1").arg(message));
+            });
 }
 
 MainWindow::~MainWindow() {
@@ -115,14 +136,17 @@ void MainWindow::setupConnections() {
     connect(ui->showLogButton, &QPushButton::clicked, this, &MainWindow::onShowLogClicked);
     connect(ui->changeKaZsButton, &QPushButton::clicked, this, &MainWindow::onChangeKaZsClicked);
     connect(ui->toggleParameterPanelButton, &QPushButton::clicked, this, &MainWindow::onToggleParameterPanelClicked);
-    connect(ui->selectNoTmiSoundButton, &QPushButton::clicked, this, [this]() {
-        QString file = QFileDialog::getOpenFileName(this, "Выбрать звуковой файл",
-                                                   QString(), "WAV Files (*.wav)");
-        if (!file.isEmpty()) {
-            ui->textBoxNoTmiSound->setText(file);
-            m_alertManager->setAlertSound(AlertType::NoTmi, file);
-        }
-    });
+    
+    if (ui->selectNoTmiSoundButton && ui->textBoxNoTmiSound) {
+        connect(ui->selectNoTmiSoundButton, &QPushButton::clicked, this, [this]() {
+            QString file = QFileDialog::getOpenFileName(this, "Выбрать звуковой файл",
+                                                      QString(), "WAV Files (*.wav)");
+            if (!file.isEmpty()) {
+                ui->textBoxNoTmiSound->setText(file);
+                m_alertManager->setAlertSound(AlertType::NoTmi, file);
+            }
+        });
+    }
     
     // Подключаем контекстные меню
     connect(ui->parameterTableView, &QTableView::customContextMenuRequested,
@@ -178,7 +202,9 @@ void MainWindow::loadSettings() {
     
     // Загружаем путь к звуковому файлу
     QString tmiSoundFile = settings.value("sounds/noTmiSound", "./NoTMI.wav").toString();
-    ui->textBoxNoTmiSound->setText(tmiSoundFile);
+    if (ui->textBoxNoTmiSound) {
+        ui->textBoxNoTmiSound->setText(tmiSoundFile);
+    }
     
     // Загружаем список параметров из JSON файла
     QString paramFileName = QString("parameters_ka%1.json").arg(sotmSettings.kaNumber);
@@ -204,7 +230,9 @@ void MainWindow::saveSettings() {
     settings.setValue("sotm/responseTimeoutMs", sotmSettings.responseTimeoutMs);
     
     // Сохраняем путь к звуковому файлу
-    settings.setValue("sounds/noTmiSound", ui->textBoxNoTmiSound->text());
+    if (ui->textBoxNoTmiSound) {
+        settings.setValue("sounds/noTmiSound", ui->textBoxNoTmiSound->text());
+    }
     
     // Сохраняем список параметров
     QString paramFileName = QString("parameters_ka%1.json").arg(sotmSettings.kaNumber);
@@ -216,32 +244,35 @@ void MainWindow::onStartMonitoringClicked() {
     const SotmSettings& settings = m_sotmClient->getSettings();
     
     if (settings.ipAddress.isEmpty()) {
-        MessageBox msg("Требуется сперва задать параметры подключения к СОТМ.", 
-                      "Ошибка", this);
-        msg.exec();
+        QMessageBox::warning(this, "Ошибка", 
+                           "Требуется сперва задать параметры подключения к СОТМ.",
+                           QMessageBox::Ok);
         return;
     }
     
     if (settings.kaNumber == 0) {
-        MessageBox msg("Требуется сперва указать номер КА.", 
-                      "Ошибка", this);
-        msg.exec();
+        QMessageBox::warning(this, "Ошибка", 
+                           "Требуется сперва указать номер КА.",
+                           QMessageBox::Ok);
         return;
     }
     
-    if (ui->textBoxNoTmiSound->text().isEmpty()) {
-        MessageBox msg("Требуется указать звуковой файл сигнализации пропадания ТМИ", 
-                      "Ошибка", this);
-        msg.exec();
+    if (ui->textBoxNoTmiSound && ui->textBoxNoTmiSound->text().isEmpty()) {
+        QMessageBox::warning(this, "Ошибка", 
+                           "Требуется указать звуковой файл сигнализации пропадания ТМИ",
+                           QMessageBox::Ok);
         return;
     }
     
     if (m_parameterModel->getAllParameters().isEmpty()) {
-        MessageBox msg("Требуется сперва задать параметры для контроля.", 
-                      "Ошибка", this);
-        msg.exec();
+        QMessageBox::warning(this, "Ошибка",
+                           "Требуется сперва задать параметры для контроля.",
+                           QMessageBox::Ok);
         return;
     }
+    
+    // Сбрасываем анализатор ТМИ
+    m_tmiAnalyzer->reset();
     
     // Запускаем мониторинг
     m_monitoringService->start();
@@ -249,10 +280,11 @@ void MainWindow::onStartMonitoringClicked() {
 
 void MainWindow::onStopMonitoringClicked() {
     // Запрашиваем подтверждение
-    MessageBox msg("Точно остановить контроль?", 
-                  "Внимание!", this, true);
+    int result = QMessageBox::question(this, "Внимание!",
+                                     "Точно остановить контроль?",
+                                     QMessageBox::Yes | QMessageBox::No);
     
-    if (msg.result() == QDialog::Accepted) {
+    if (result == QMessageBox::Yes) {
         // Останавливаем мониторинг
         m_monitoringService->stop();
     }
@@ -287,9 +319,9 @@ void MainWindow::onRemoveParameterClicked() {
     // Проверяем, выбран ли параметр
     QModelIndex index = ui->parameterTableView->currentIndex();
     if (!index.isValid()) {
-        MessageBox msg("Не выбран параметр для удаления.", 
-                      "Ошибка", this);
-        msg.exec();
+        QMessageBox::warning(this, "Ошибка", 
+                           "Не выбран параметр для удаления.",
+                           QMessageBox::Ok);
         return;
     }
     
@@ -300,12 +332,13 @@ void MainWindow::onRemoveParameterClicked() {
         m_parameterTableModel->index(index.row(), ParameterTableModel::ConditionColumn)).toString();
     
     // Запрашиваем подтверждение
-    MessageBox msg(QString("Точно удалить данное условие контроля?\nПараметр: %1,\nУсловие контроля: %2")
-                  .arg(paramName)
-                  .arg(paramDesc), 
-                  "Подтверждение", this, true);
+    int result = QMessageBox::question(this, "Подтверждение",
+                                     QString("Точно удалить данное условие контроля?\nПараметр: %1,\nУсловие контроля: %2")
+                                     .arg(paramName)
+                                     .arg(paramDesc),
+                                     QMessageBox::Yes | QMessageBox::No);
     
-    if (msg.result() == QDialog::Accepted) {
+    if (result == QMessageBox::Yes) {
         // Получаем параметр
         int paramIndex = index.row();
         std::shared_ptr<Parameter> param = m_parameterModel->getAllParameters()[paramIndex];
@@ -329,9 +362,9 @@ void MainWindow::onEditParameterClicked() {
     // Проверяем, выбран ли параметр
     QModelIndex index = ui->parameterTableView->currentIndex();
     if (!index.isValid()) {
-        MessageBox msg("Не выбран параметр для редактирования.", 
-                      "Ошибка", this);
-        msg.exec();
+        QMessageBox::warning(this, "Ошибка", 
+                           "Не выбран параметр для редактирования.",
+                           QMessageBox::Ok);
         return;
     }
     
@@ -410,10 +443,11 @@ void MainWindow::onShowLogClicked() {
 
 void MainWindow::onChangeKaZsClicked() {
     // Запрашиваем подтверждение
-    MessageBox msg("Для изменения выбора КА и ЗС потребуется\nперезапуск приложения. Продолжить?", 
-                  "Внимание!", this, true);
+    int result = QMessageBox::question(this, "Внимание!",
+                                     "Для изменения выбора КА и ЗС потребуется\nперезапуск приложения. Продолжить?",
+                                     QMessageBox::Yes | QMessageBox::No);
     
-    if (msg.result() == QDialog::Accepted) {
+    if (result == QMessageBox::Yes) {
         // Открываем диалог выбора КА и ЗС
         KaZsDialog dialog(m_sotmClient->getSettings().kaNumber, 
                           m_sotmClient->getSettings().zsNumber, this);
@@ -496,10 +530,16 @@ void MainWindow::onParameterValueChanged(const QString& name, const QVariant& va
             } else {
                 ui->sekLabel->setStyleSheet("background-color: silver; color: black; font-family: Consolas;");
             }
+            
+            // Анализируем значение СЕК для обнаружения аномалий
+            m_tmiAnalyzer->analyzeSek(value.toString());
         } else {
             // Если не удалось преобразовать в число
             ui->sekLabel->setText("СЕК:\nError");
             ui->sekLabel->setStyleSheet("background-color: IndianRed; color: black; font-family: Consolas;");
+            
+            // Считаем это аномалией
+            m_tmiAnalyzer->analyzeSek("error");
         }
     }
 }
@@ -584,9 +624,11 @@ void MainWindow::onLogContextMenu(const QPoint& pos) {
 
 void MainWindow::onClearLog() {
     // Запрашиваем подтверждение
-    MessageBox msg("Удалить все строки?", "Подтверждение", this, true);
+    int result = QMessageBox::question(this, "Подтверждение",
+                                     "Удалить все строки?",
+                                     QMessageBox::Yes | QMessageBox::No);
     
-    if (msg.result() == QDialog::Accepted) {
+    if (result == QMessageBox::Yes) {
         // Очищаем лог
         m_logManager->clearLog();
         
@@ -597,11 +639,13 @@ void MainWindow::onClearLog() {
 
 void MainWindow::closeEvent(QCloseEvent* event) {
     // Проверяем, запущен ли мониторинг
-    if (m_monitoringService && m_monitoringService->statusChanged()) {
+    if (m_monitoringService && m_monitoringService->isRunning()) {
         // Запрашиваем подтверждение
-        MessageBox msg("Закрыть программу?", "Внимание!", this, true);
+        int result = QMessageBox::question(this, "Внимание!",
+                                        "Закрыть программу?",
+                                        QMessageBox::Yes | QMessageBox::No);
         
-        if (msg.result() == QDialog::Accepted) {
+        if (result == QMessageBox::Yes) {
             // Останавливаем мониторинг
             m_monitoringService->stop();
             
