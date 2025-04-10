@@ -1,76 +1,88 @@
 ParamControl/
-│
-├── src/                           # Исходные коды проекта
-│   ├── main.cpp                   # Главный файл приложения (✓ реализовано)
-│   │
-│   ├── core/                      # Ядро приложения
-│   │   ├── Parameter.h            # Базовый класс параметра (✓ реализовано)
-│   │   ├── Parameter.cpp          # (✓ реализовано)
-│   │   ├── ParameterModel.h       # Модель данных параметров (✓ реализовано)
-│   │   ├── ParameterModel.cpp     # (✓ реализовано)
-│   │   ├── SotmClient.h           # Клиент для работы с СОТМ (✓ реализовано)
-│   │   ├── SotmClient.cpp         # (✓ реализовано)
-│   │   ├── XmlParser.h            # Парсер XML-данных (✓ реализовано)
-│   │   ├── XmlParser.cpp          # (✓ реализовано)
-│   │   ├── MonitoringService.h    # Сервис мониторинга (✓ реализовано)
-│   │   ├── MonitoringService.cpp  # (✓ реализовано)
-│   │   ├── AlertManager.h         # Менеджер оповещений (✓ реализовано)
-│   │   ├── AlertManager.cpp       # (✓ реализовано)
-│   │   ├── LogManager.h           # Менеджер журналирования (✓ реализовано)
-│   │   ├── LogManager.cpp         # (✓ реализовано)
-│   │   ├── TmiAnalyzer.h          # Анализатор телеметрии (✓ реализовано)
-│   │   ├── TmiAnalyzer.cpp        # (✓ реализовано)
-│   │   ├── UpdateManager.h        # Менеджер обновлений (✓ реализовано)
-│   │   └── UpdateManager.cpp      # (✓ реализовано)
-│   │
-│   ├── ui/                        # Пользовательский интерфейс
-│   │   ├── MainWindow.h           # Главное окно (✓ реализовано)
-│   │   ├── MainWindow.cpp         # (✓ реализовано)
-│   │   ├── MainWindow.ui          # Qt Designer форма (❌ не реализовано)
-│   │   ├── ParameterDialog.h      # Диалог параметра (✓ реализовано)
-│   │   ├── ParameterDialog.cpp    # (✓ реализовано)
-│   │   ├── ParameterDialog.ui     # (❌ не реализовано)
-│   │   ├── ConnectionDialog.h     # Диалог подключения (✓ реализовано)
-│   │   ├── ConnectionDialog.cpp   # (✓ реализовано)
-│   │   ├── ConnectionDialog.ui    # (✓ реализовано)
-│   │   ├── LogDialog.h            # Диалог журнала (✓ реализовано)
-│   │   ├── LogDialog.cpp          # (✓ реализовано)
-│   │   ├── LogDialog.ui           # (✓ реализовано)
-│   │   ├── KaZsDialog.h           # Диалог выбора КА и ЗС (✓ реализовано)
-│   │   ├── KaZsDialog.cpp         # (✓ реализовано)
-│   │   ├── KaZsDialog.ui          # (✓ реализовано)
-│   │   ├── SettingsDialog.h       # Диалог настроек (✓ реализовано)
-│   │   ├── SettingsDialog.cpp     # (✓ реализовано)
-│   │   ├── SettingsDialog.ui      # (❌ не реализовано)
-│   │   ├── ParameterCardView.h    # Карточка параметра (✓ реализовано)
-│   │   ├── ParameterCardView.cpp  # (✓ реализовано)
-│   │   ├── ParameterCardView.ui   # (❌ не реализовано)
-│   │   ├── MessageBox.h           # Пользовательский MessageBox (❌ не реализовано)
-│   │   ├── MessageBox.cpp         # (❌ не реализовано)
-│   │   ├── MessageBox.ui          # (❌ не реализовано)
-│   │   ├── ParameterTableModel.h  # Модель таблицы параметров (✓ реализовано)
-│   │   ├── ParameterTableModel.cpp # (✓ реализовано)
-│   │   ├── LogTableModel.h        # Модель таблицы журнала (✓ реализовано)
-│   │   └── LogTableModel.cpp      # (✓ реализовано)
-│   │
-│   └── resources/                 # Ресурсы приложения
-│       ├── icons/                 # Иконки
-│       │   ├── app_icon.ico       # Иконка приложения
-│       │   ├── sound_on.png       # Иконка включенного звука
-│       │   └── sound_off.png      # Иконка отключенного звука
-│       ├── sounds/                # Звуковые файлы
-│       │   ├── alert.wav          # Звук тревоги
-│       │   ├── beep.wav           # Звук сигнала
-│       │   ├── notmi.wav          # Звук отсутствия телеметрии
-│       │   └── warning.wav        # Звук предупреждения
-│       └── resources.qrc          # Файл ресурсов Qt (✓ реализовано)
-│
-├── data/                          # Данные приложения
-│   ├── KA_list.txt               # Список доступных КА
-│   ├── ZS_list.txt               # Список доступных ЗС
-│   ├── SotmInterval.txt          # Интервал опроса СОТМ
-│   ├── parameters_ka*.json       # Файлы параметров для разных КА
-│   └── LOG_*.txt                 # Файлы журналов для разных КА
-│
-├── ParamControl.pro              # Файл проекта Qt (✓ реализовано)
-└── README.md                     # Документация (❌ не реализовано)
+    │
+    ├── src/                           # Исходные коды проекта
+    │   ├── main.cpp                   # Главный файл приложения (✓ реализовано)
+    │   │
+    │   ├── core/                      # Ядро приложения
+    │   │   ├── Parameter.h            # Базовый класс параметра (✓ реализовано)
+    │   │   ├── Parameter.cpp          # (✓ реализовано)
+    │   │   ├── ParameterEquals.h      # Класс параметра Equals (✓ реализовано)
+    │   │   ├── ParameterEquals.cpp    # (✓ реализовано)
+    │   │   ├── ParameterNotEquals.h   # Класс параметра NotEquals (✓ реализовано)
+    │   │   ├── ParameterNotEquals.cpp # (✓ реализовано)
+    │   │   ├── ParameterInLimits.h    # Класс параметра InLimits (✓ реализовано)
+    │   │   ├── ParameterInLimits.cpp  # (✓ реализовано)
+    │   │   ├── ParameterOutOfLimits.h # Класс параметра OutOfLimits (✓ реализовано)
+    │   │   ├── ParameterOutOfLimits.cpp# (✓ реализовано)
+    │   │   ├── ParameterChanged.h     # Класс параметра Changed (✓ реализовано)
+    │   │   ├── ParameterChanged.cpp   # (✓ реализовано)
+    │   │   ├── ParameterModel.h       # Модель данных параметров (✓ реализовано)
+    │   │   ├── ParameterModel.cpp     # (✓ реализовано)
+    │   │   ├── SotmClient.h           # Клиент для работы с СОТМ (✓ реализовано)
+    │   │   ├── SotmClient.cpp         # (✓ реализовано)
+    │   │   ├── XmlParser.h            # Парсер XML-данных (✓ реализовано)
+    │   │   ├── XmlParser.cpp          # (✓ реализовано)
+    │   │   ├── MonitoringService.h    # Сервис мониторинга (✓ реализовано)
+    │   │   ├── MonitoringService.cpp  # (✓ реализовано)
+    │   │   ├── AlertManager.h         # Менеджер оповещений (✓ реализовано)
+    │   │   ├── AlertManager.cpp       # (✓ реализовано)
+    │   │   ├── LogManager.h           # Менеджер журналирования (✓ реализовано)
+    │   │   ├── LogManager.cpp         # (✓ реализовано)
+    │   │   ├── TmiAnalyzer.h          # Анализатор телеметрии (✓ реализовано)
+    │   │   ├── TmiAnalyzer.cpp        # (✓ реализовано)
+    │   │   ├── UpdateManager.h        # Менеджер обновлений (✓ реализовано)
+    │   │   └── UpdateManager.cpp      # (✓ реализовано)
+    │   │
+    │   ├── ui/                        # Пользовательский интерфейс
+    │   │   ├── MainWindow.h           # Главное окно (✓ реализовано)
+    │   │   ├── MainWindow.cpp         # (✓ реализовано)
+    │   │   ├── MainWindow.ui          # (❌ НЕ РЕАЛИЗОВАНО / НЕ ПРЕДОСТАВЛЕНО)
+    │   │   ├── ParameterDialog.h      # Диалог параметра (✓ реализовано)
+    │   │   ├── ParameterDialog.cpp    # (✓ реализовано)
+    │   │   ├── ParameterDialog.ui     # (❌ НЕ РЕАЛИЗОВАНО / НЕ ПРЕДОСТАВЛЕНО)
+    │   │   ├── ConnectionDialog.h     # Диалог подключения (✓ реализовано)
+    │   │   ├── ConnectionDialog.cpp   # (✓ реализовано)
+    │   │   ├── ConnectionDialog.ui    # (❌ НЕ РЕАЛИЗОВАНО / НЕ ПРЕДОСТАВЛЕНО)
+    │   │   ├── LogDialog.h            # Диалог журнала (✓ реализовано)
+    │   │   ├── LogDialog.cpp          # (✓ реализовано)
+    │   │   ├── LogDialog.ui           # (❌ НЕ РЕАЛИЗОВАНО / НЕ ПРЕДОСТАВЛЕНО)
+    │   │   ├── KaZsDialog.h           # Диалог выбора КА и ЗС (✓ реализовано)
+    │   │   ├── KaZsDialog.cpp         # (✓ реализовано)
+    │   │   ├── KaZsDialog.ui          # (❌ НЕ РЕАЛИЗОВАНО / НЕ ПРЕДОСТАВЛЕНО)
+    │   │   ├── SettingsDialog.h       # Диалог настроек (✓ реализовано)
+    │   │   ├── SettingsDialog.cpp     # (✓ реализовано)
+    │   │   ├── SettingsDialog.ui      # (❌ НЕ РЕАЛИЗОВАНО / НЕ ПРЕДОСТАВЛЕНО)
+    │   │   ├── ParameterCardView.h    # Карточка параметра (✓ реализовано)
+    │   │   ├── ParameterCardView.cpp  # (✓ реализовано)
+    │   │   ├── ParameterCardView.ui   # (❌ НЕ РЕАЛИЗОВАНО / НЕ ПРЕДОСТАВЛЕНО)
+    │   │   ├── MessageBox.h           # Пользовательский MessageBox (❌ НЕ РЕАЛИЗОВАНО)
+    │   │   ├── MessageBox.cpp         # (❌ НЕ РЕАЛИЗОВАНО)
+    │   │   ├── MessageBox.ui          # (❌ НЕ РЕАЛИЗОВАНО)
+    │   │   ├── ParameterTableModel.h  # Модель таблицы параметров (✓ реализовано)
+    │   │   ├── ParameterTableModel.cpp # (✓ реализовано)
+    │   │   ├── LogTableModel.h        # Модель таблицы журнала (✓ реализовано)
+    │   │   ├── LogTableModel.cpp      # (✓ реализовано)
+    │   │   ├── LogSortFilterProxyModel.h # Прокси-модель для лога (❌ НЕ РЕАЛИЗОВАНО)
+    │   │   └── LogSortFilterProxyModel.cpp # (❌ НЕ РЕАЛИЗОВАНО)
+    │   │
+    │   └── resources/                 # Ресурсы приложения
+    │       ├── icons/                 # Иконки (❓ не предоставлено)
+    │       │   ├── app_icon.ico       # (❓ не предоставлено)
+    │       │   ├── sound_on.png       # (❓ не предоставлено)
+    │       │   └── sound_off.png      # (❓ не предоставлено)
+    │       ├── sounds/                # Звуковые файлы (❓ не предоставлено)
+    │       │   ├── alert.wav          # (❓ не предоставлено)
+    │       │   ├── beep.wav           # (❓ не предоставлено)
+    │       │   ├── notmi.wav          # (❓ не предоставлено)
+    │       │   └── warning.wav        # (❓ не предоставлено)
+    │       └── resources.qrc          # Файл ресурсов Qt (✓ реализовано, но сами ресурсы ❓)
+    │
+    ├── data/                          # Данные приложения (✓ реализовано)
+    │   ├── KA_list.txt                # (✓ реализовано)
+    │   ├── ZS_list.txt                # (✓ реализовано)
+    │   ├── SotmInterval.txt           # (✓ реализовано)
+    │   ├── parameters_ka*.json        # (✓ пример реализован)
+    │   └── LOG_*.txt                  # (✓ пример реализован)
+    │
+    ├── ParamControl.pro              # Файл проекта Qt (✓ реализовано)
+    └── README.md                     # Документация (❌ НЕ РЕАЛИЗОВАНО)
